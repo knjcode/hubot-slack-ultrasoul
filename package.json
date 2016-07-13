@@ -1,0 +1,24 @@
+{
+  "name": "hubot-slack-ultrasoul",
+  "version": "0.0.1",
+  "description": "add reaction to ultrasoul messages",
+  "main": "index.coffee",
+  "author": "knjcode <knjcode@gmail.com>",
+  "license": "MIT",
+  "keywords": "hubot, hubot-scripts, ultrasoul, hi!",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/knjcode/hubot-slack-ultrasoul.git"
+  },
+  "bugs": {
+    "url": "https://github.com/knjcode/hubot-slack-ultrasoul/issues"
+  },
+  "dependencies": {
+    "es6-promise": "^3.2.1",
+    "kuromojin": "^1.3.1",
+    "lodash.max": "^4.0.1",
+    "lodash.reduce": "^4.4.0",
+    "lodash.zipwith": "^4.0.0",
+    "unorm": "^1.4.1"
+  }
+}

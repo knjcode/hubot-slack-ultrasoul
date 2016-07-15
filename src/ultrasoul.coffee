@@ -52,6 +52,8 @@ module.exports = (robot) ->
         continue if token.pos is '記号'
         for item in ['、', '!', '?']
           if token.surface_form is item
+            if regions[regions.length - 1] isnt 0
+              regions.push 0
             `continue outer`
 
         pronunciation = token.pronunciation or token.surface_form
@@ -65,6 +67,9 @@ module.exports = (robot) ->
           regions[regions.length - 1] += regionLength
         else
           regions.push(regionLength)
+
+      if regions[regions.length - 1] is 0
+        regions.pop
 
       return if regions.length isnt targetRegions.length
 

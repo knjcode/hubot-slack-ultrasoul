@@ -83,6 +83,8 @@ module.exports = (robot) ->
 
       return if regions.length isnt targetRegions.length
 
+      regions[2] = 7 if 5 <= regions[2] <= 7
+
       jiamari = checkArrayDifference regions, targetRegions
       jitarazu = checkArrayDifference targetRegions, regions
 

@@ -2,7 +2,8 @@
 #   Add reaction to ultrasoul messages
 #
 # Configuration:
-#   HUBOT_SLACK_ULTRASOUL_REACTION - set reaction emoji (default. raising_hand)
+#   HUBOT_SLACK_ULTRASOUL_MECAB_API_URL - set mecab-api URL
+#   HUBOT_SLACK_ULTRASOUL_REACTION      - set reaction emoji (default. raising_hand)
 #
 # Reference
 #   https://github.com/hakatashi/slack-ikku
@@ -19,6 +20,10 @@ unorm = require 'unorm'
 util = require 'util'
 zipWith = require 'lodash.zipwith'
 
+mecabUrl = process.env.HUBOT_SLACK_ULTRASOUL_MECAB_API_URL
+if !mecabUrl
+  console.error("ERROR: You should set HUBOT_SLACK_ULTRASOUL_MECAB_API_URL env variables.")
+
 reaction = process.env.HUBOT_SLACK_ULTRASOUL_REACTION ? 'raising_hand'
 
 module.exports = (robot) ->
@@ -29,13 +34,26 @@ module.exports = (robot) ->
     reduce tmp, (sum, n) -> sum + n
 
 
+  mecabTokenize = (unorm_text, robot) -> new Promise (resolve) ->
+    data = JSON.stringify {
+        "sentence": unorm_text
+        "dictionary": 'mecab-ipadic-neologd'
+    }
+    robot.http(mecabUrl)
+      .header("Content-type", "application/json")
+      .post(data) (err, res, body) ->
+        resolve JSON.parse(body)
+
   robot.hear /.*?/i, (msg) ->
+    if !mecabUrl
+      robot.logger.error("You should set HUBOT_SLACK_ULTRASOUL_MECAB_API_URL env variables.")
+      return
     unorm_text = unorm.nfkc msg.message.text
 
     # detect ultrasoul
-    tokenize(unorm_text)
+    mecabTokenize(unorm_text, robot)
     .then (result) ->
-      tokens = result
+      tokens = result.word_list
       targetRegions = [3, 4, 7]
       regions = [0]
 

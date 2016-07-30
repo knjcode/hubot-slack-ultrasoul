@@ -28,14 +28,6 @@ module.exports = (robot) ->
     .map (x) -> max [x, 0]
     reduce tmp, (sum, n) -> sum + n
 
-  addReaction = (reaction, msg) -> new Promise (resolve) ->
-    channelId = robot.adapter.client.getChannelGroupOrDMByName(msg.envelope.room)?.id
-    robot.adapter.client._apiCall 'reactions.add',
-      name: reaction
-      channel: channelId
-      timestamp: msg.message.id
-    , (result) ->
-      resolve result
 
   robot.hear /.*?/i, (msg) ->
     unorm_text = unorm.nfkc msg.message.text
@@ -78,10 +70,14 @@ module.exports = (robot) ->
 
       return if jitarazu > 0 or jiamari > 1
 
-      addReaction(reaction, msg)
-      .then ->
+      robot.adapter.client.web.reactions.add reaction,
+        channel: msg.envelope.room
+        timestamp: msg.message.id
+      .then (res) ->
         robot.logger.info "Found ultrasoul! #{msg.message.text}"
         robot.logger.debug "Add recation #{reaction} ts: #{msg.message.id}, channel: #{msg.envelope.room}, text: #{msg.message.text}"
+      .catch (error) ->
+        robot.logger.error error
 
     .catch (error) ->
       robot.logger.error error

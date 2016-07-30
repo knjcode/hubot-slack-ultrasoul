@@ -11,6 +11,9 @@ npmでインストール
 ```
 $ cd /path/to/hubot
 $ npm install --save knjcode/hubot-slack-ultrasoul
+
+# hubot-slackのv4系を利用している場合は以下のとおり
+$ npm install --save knjcode/hubot-slack-ultrasoul#hubot-slack-v4
 ```
 
 `external-scripts.json`へスクリプトを登録
